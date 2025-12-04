@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+{% block title %}Search{% endblock %}
+{% block content %}
+    <h2>Search Page (Vulnerable to Reflected XSS)</h2>
+    <form method="get">
+        <div class="input-group mb-3">
+            <input type="text" class="form-control" placeholder="Enter search query..." name="query">
+            <button class="btn btn-outline-secondary" type="submit">Search</button>
+        </div>
+    </form>
+    {% if query %}
+        <hr>
+        <h4>Search results for: {{ query | safe }}</h4>
+        {% endif %}
+{% endblock %}

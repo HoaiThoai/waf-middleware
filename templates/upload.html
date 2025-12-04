@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% block title %}Secure File Upload{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-6">
+        <div class="card shadow">
+            <div class="card-header bg-dark text-white">
+                <h4><i class="fas fa-cloud-upload-alt"></i> Upload File (Demo)</h4>
+            </div>
+            <div class="card-body">
+                <div class="alert alert-info">
+                    <strong>Lưu ý:</strong> Hệ thống WAF sẽ tự động quét và chặn các file có đuôi nguy hiểm như .php, .exe, .sh.
+                </div>
+                
+                <form method="POST" enctype="multipart/form-data">
+                    <div class="mb-3">
+                        <label for="file" class="form-label">Chọn file ảnh (Avatar):</label>
+                        <input class="form-control" type="file" id="file" name="file" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary w-100">Upload</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

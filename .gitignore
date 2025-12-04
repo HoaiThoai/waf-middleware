@@ -1,0 +1,25 @@
+# 1. Môi trường ảo (Nặng hàng trăm MB, không ai push cái này)
+venv/
+myvenv/
+env/
+
+# 2. File biên dịch của Python (Rác)
+__pycache__/
+*.pyc
+
+# 3. Database & Log (Dữ liệu chạy thực tế, không push lên)
+database.db
+waf.log
+
+# 4. File đóng gói (Được sinh ra khi chạy lệnh build - KHÔNG PUSH)
+dist/
+build/
+*.egg-info/
+
+# 5. Cấu hình Editor (Của riêng máy cậu)
+.vscode/
+.idea/
+
+# 6. File hệ thống (Mac/Windows)
+.DS_Store
+Thumbs.db

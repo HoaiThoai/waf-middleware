@@ -1,0 +1,132 @@
+{% extends "base.html" %}
+
+{% block title %}Home - WAF Middleware{% endblock %}
+
+{% block content %}
+<style>
+    .hero-section {
+        text-align: center;
+        padding: 80px 20px;
+        background: radial-gradient(circle at center, #16213e 0%, #1a1a2e 100%);
+        border-radius: 15px;
+        margin-bottom: 40px;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+        color: white;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .hero-title {
+        font-size: 3.5rem;
+        font-weight: 700;
+        background: -webkit-linear-gradient(45deg, #00f2c3, #0098f0);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        margin-bottom: 20px;
+    }
+
+    .hero-subtitle {
+        font-size: 1.2rem;
+        color: #a0a0a0;
+        max-width: 800px;
+        margin: 0 auto;
+        line-height: 1.6;
+    }
+
+    .features-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 30px;
+    }
+
+    .feature-card {
+        background: white;
+        padding: 30px;
+        border-radius: 10px;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+        transition: transform 0.3s;
+        border-top: 4px solid transparent;
+        height: 100%;
+    }
+
+    .feature-card:hover { transform: translateY(-5px); box-shadow: 0 10px 25px rgba(0,0,0,0.1); }
+    .feature-card.sqli { border-color: #dc3545; }
+    .feature-card.xss { border-color: #ffc107; }
+    .feature-card.lfi { border-color: #17a2b8; }
+    .feature-card.logic { border-color: #6610f2; }
+
+    .feature-icon { font-size: 2.5rem; margin-bottom: 20px; }
+    
+    .tech-detail {
+        font-size: 0.9rem;
+        color: #666;
+        background: #f8f9fa;
+        padding: 15px;
+        border-radius: 8px;
+        margin-top: 15px;
+        border-left: 3px solid #ccc;
+    }
+    .feature-card.sqli .tech-detail { border-left-color: #dc3545; }
+    .feature-card.xss .tech-detail { border-left-color: #ffc107; }
+    .feature-card.lfi .tech-detail { border-left-color: #17a2b8; }
+    .feature-card.logic .tech-detail { border-left-color: #6610f2; }
+
+</style>
+
+<div class="hero-section">
+    <h1 class="hero-title">WAF Middleware Defense</h1>
+    <p class="hero-subtitle">
+        Đồ án Chuyên ngành: Xây dựng hệ thống Tường lửa Ứng dụng Web tích hợp khả năng phòng thủ đa lớp.<br>
+        Bảo vệ hệ thống khỏi OWASP Top 10 Vulnerabilities bằng Regex Engine và Logic Analysis.
+    </p>
+</div>
+
+<div class="row mb-4">
+    <div class="col-12 text-center mb-4">
+        <h2 style="font-weight: 600; color: #333;">Các Lớp Phòng Thủ Chính</h2>
+        <div style="width: 60px; height: 4px; background: #0098f0; margin: 10px auto;"></div>
+    </div>
+</div>
+
+<div class="features-grid">
+    <div class="feature-card sqli">
+        <div class="feature-icon text-danger"><i class="fas fa-database"></i></div>
+        <h4>Chống SQL Injection</h4>
+        <p class="text-muted">Ngăn chặn kẻ tấn công chèn các câu lệnh SQL độc hại để thao túng cơ sở dữ liệu.</p>
+        <div class="tech-detail">
+            <strong>Cơ chế:</strong> Sử dụng Regex để phát hiện các từ khóa như <code>UNION</code>, <code>OR 1=1</code>, <code>DROP TABLE</code> trong input người dùng.
+        </div>
+    </div>
+
+    <div class="feature-card xss">
+        <div class="feature-icon text-warning"><i class="fas fa-code"></i></div>
+        <h4>Chống XSS (Cross-Site Scripting)</h4>
+        <p class="text-muted">Ngăn chặn việc chèn mã script độc hại vào trang web để đánh cắp session hoặc chuyển hướng người dùng.</p>
+        <div class="tech-detail">
+            <strong>Cơ chế:</strong> Lọc bỏ các thẻ <code>&lt;script&gt;</code>, các sự kiện <code>onload</code>, <code>onerror</code> và giao thức <code>javascript:</code>.
+        </div>
+    </div>
+
+    <div class="feature-card lfi">
+        <div class="feature-icon text-info"><i class="fas fa-folder-open"></i></div>
+        <h4>Chống LFI (Local File Inclusion)</h4>
+        <p class="text-muted">Ngăn chặn truy cập trái phép vào các tệp tin hệ thống nhạy cảm trên máy chủ.</p>
+        <div class="tech-detail">
+            <strong>Cơ chế:</strong> Phát hiện các mẫu Path Traversal như <code>../</code>, <code>..\</code> hoặc nỗ lực truy cập vào <code>/etc/passwd</code>.
+        </div>
+    </div>
+
+    <div class="feature-card logic">
+        <div class="feature-icon text-primary"><i class="fas fa-brain"></i></div>
+        <h4>Phòng thủ Nâng cao (Logic)</h4>
+        <p class="text-muted">Các cơ chế bảo vệ thông minh dựa trên hành vi và ngữ cảnh.</p>
+        <div class="tech-detail">
+            <ul style="padding-left: 20px; margin-bottom: 0;">
+                <li><strong>Honeypot:</strong> Bẫy hacker truy cập link ẩn.</li>
+                <li><strong>GeoIP:</strong> Chặn IP từ quốc gia không tin cậy.</li>
+                <li><strong>Anti-CSRF:</strong> Kiểm tra nguồn gốc request (Referer/Origin).</li>
+            </ul>
+        </div>
+    </div>
+</div>
+{% endblock %}

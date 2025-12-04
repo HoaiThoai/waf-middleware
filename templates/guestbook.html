@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+{% block title %}Guestbook{% endblock %}
+{% block content %}
+    <h2>Guestbook (Vulnerable to Stored XSS)</h2>
+    <div class="card mb-4">
+        <div class="card-body">
+            <h5 class="card-title">Leave a comment</h5>
+            <form method="post">
+                <div class="mb-3">
+                    <label for="comment" class="form-label">Your comment:</label>
+                    <textarea class="form-control" id="comment" name="comment" rows="3"></textarea>
+                </div>
+                <button type="submit" class="btn btn-primary">Submit</button>
+            </form>
+        </div>
+    </div>
+
+    <hr>
+    <h3>Comments:</h3>
+    {% for comment in comments %}
+        <div class="card mb-2">
+            <div class="card-body">
+                <p class="card-text">{{ comment.content | safe }}</p>
+            </div>
+        </div>
+    {% else %}
+        <p>No comments yet.</p>
+    {% endfor %}
+{% endblock %}

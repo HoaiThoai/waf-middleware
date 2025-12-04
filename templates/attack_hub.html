@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Attack Simulator V5.0 (Final)</title>
+    <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap" rel="stylesheet">
+    <style>
+        /* GIỮ NGUYÊN CSS CŨ */
+        body { background-color: #0d1117; color: #00ff41; font-family: 'Share Tech Mono', monospace; padding: 20px; display: flex; justify-content: center; align-items: center; min-height: 100vh; }
+        .console { width: 100%; max-width: 1000px; border: 2px solid #30363d; border-radius: 8px; background: #161b22; box-shadow: 0 0 20px rgba(0, 255, 65, 0.1); overflow: hidden; }
+        .header { background: #21262d; padding: 10px 20px; border-bottom: 1px solid #30363d; display: flex; justify-content: space-between; align-items: center; }
+        .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0; }
+        .controls { padding: 20px; border-right: 1px solid #30363d; max-height: 600px; overflow-y: auto; }
+        .logs { padding: 20px; background: #0d1117; height: 600px; overflow-y: auto; font-size: 13px; }
+        
+        .attack-group { margin-bottom: 25px; border-bottom: 1px dashed #30363d; padding-bottom: 15px; }
+        .attack-label { color: #8b949e; font-size: 12px; margin-bottom: 8px; display: block; font-weight: bold; letter-spacing: 1px; }
+        
+        button { width: 100%; padding: 10px; margin-bottom: 8px; background: #21262d; border: 1px solid #30363d; color: #c9d1d9; font-family: 'Share Tech Mono', monospace; cursor: pointer; transition: all 0.2s; text-align: left; border-radius: 4px; font-size: 12px; }
+        button:hover { background: #30363d; color: #fff; border-color: #8b949e; transform: translateX(5px); }
+        button:active { transform: scale(0.98); }
+        
+        .btn-sqli { border-left: 3px solid #da3633; }
+        .btn-xss { border-left: 3px solid #d29922; }
+        .btn-lfi { border-left: 3px solid #2f81f7; }
+        .btn-cmd { border-left: 3px solid #f778ba; }
+        .btn-logic { border-left: 3px solid #8957e5; }
+        .btn-ddos { border-left: 3px solid #ffffff; background: #2a0a0a; }
+
+        .log-entry { margin-bottom: 5px; padding: 5px; border-bottom: 1px solid #21262d; word-break: break-all; }
+        .status-200 { color: #ff7b72; } .status-403 { color: #3fb950; } .status-429 { color: #d29922; }
+        .back-link { display: inline-block; margin-top: 20px; color: #58a6ff; text-decoration: none; margin-right: 15px; }
+        
+        /* Toggle Switch */
+        .toggle-container { display: flex; align-items: center; margin-right: 20px; }
+        .switch { position: relative; display: inline-block; width: 40px; height: 20px; margin-right: 10px; }
+        .switch input { opacity: 0; width: 0; height: 0; }
+        .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #30363d; transition: .4s; border-radius: 20px; }
+        .slider:before { position: absolute; content: ""; height: 14px; width: 14px; left: 3px; bottom: 3px; background-color: white; transition: .4s; border-radius: 50%; }
+        input:checked + .slider { background-color: #238636; }
+        input:checked + .slider:before { transform: translateX(20px); }
+    </style>
+</head>
+<body>
+
+<div class="console">
+    <div class="header">
+        <span>> ATTACK_HUB_V5.0 (ADMIN ACCESS)</span>
+        <div class="toggle-container">
+            <label class="switch"><input type="checkbox" id="fakeIpToggle"><span class="slider"></span></label>
+            <span style="font-size: 12px; color: #8b949e;">FAKE IP (BYPASS BLACKLIST)</span>
+        </div>
+    </div>
+    
+    <div class="grid">
+        <div class="controls">
+            <div class="attack-group">
+                <span class="attack-label">INJECTION ATTACKS</span>
+                <button class="btn-sqli" onclick="launchAttack('/login', 'POST', {username: `' OR 1=1 --`, password: '123'}, 'SQLi (Bypass)', {})">> SQLi (Bypass)</button>
+                <button class="btn-sqli" onclick="launchAttack('/login', 'POST', {username: `admin' UNION SELECT 1,2 --`, password: '123'}, 'SQLi (Union)', {})">> SQLi (Union)</button>
+                <button class="btn-cmd" onclick="launchAttack('/search?query=; cat /etc/passwd', 'GET', null, 'CMD Injection', {})">> CMD Injection</button>
+            </div>
+
+            <div class="attack-group">
+                <span class="attack-label">WEB VULNERABILITIES</span>
+                <button class="btn-xss" onclick="launchAttack('/search?query=<script>alert(1)</script>', 'GET', null, 'XSS Reflected', {})">> XSS Reflected</button>
+                <button class="btn-lfi" onclick="launchAttack('/search?query=../../etc/passwd', 'GET', null, 'LFI (Traversal)', {})">> LFI (Traversal)</button>
+            </div>
+
+            <div class="attack-group">
+                <span class="attack-label">ADVANCED LOGIC</span>
+                
+                <button class="btn-logic" onclick="launchAttack('/config.php', 'GET', null, 'HONEYPOT TRAP', {})">> TRIGGER HONEYPOT (/config.php)</button>
+                
+                <button class="btn-logic" onclick="launchAttack('/', 'GET', null, 'GEOIP BLOCK (CN)', {'X-Country': 'CN'})">> GEOIP BLOCK (China)</button>
+                
+                <button class="btn-logic" onclick="launchAttack('/guestbook', 'POST', {comment: 'Spam'}, 'CSRF ATTACK', {'X-Origin-Fake': 'http://evil.com'})">> CSRF (Fake Origin)</button>
+            </div>
+
+            <div class="attack-group" style="border-bottom: none;">
+                <span class="attack-label">STRESS TEST</span>
+                <button class="btn-ddos" onclick="simulateDDoS()">> SIMULATE HTTP FLOOD</button>
+            </div>
+            
+            <a href="/" class="back-link"><< HOME</a> | <a href="/waf-dashboard" class="back-link" target="_blank">DASHBOARD >></a>
+            <a href="/admin/logout" class="back-link" style="color: #ff7b72;">LOGOUT [x]</a>
+        </div>
+        <div class="logs" id="logWindow">
+            <div style="color: #8b949e; margin-bottom: 10px;">// SYSTEM READY...</div>
+        </div>
+    </div>
+</div>
+
+<script>
+    function log(message, statusClass = '') {
+        const logWindow = document.getElementById('logWindow');
+        const div = document.createElement('div');
+        div.className = 'log-entry ' + statusClass;
+        div.innerHTML = `[${new Date().toLocaleTimeString()}] ${message}`;
+        logWindow.prepend(div);
+    }
+
+    function generateRandomIP() {
+        return Math.floor(Math.random() * 255) + "." + Math.floor(Math.random() * 255) + "." + Math.floor(Math.random() * 255) + "." + Math.floor(Math.random() * 255);
+    }
+
+    async function launchAttack(url, method, data, attackName, customHeaders) {
+        log(`> Sending ${attackName}...`, 'normal');
+        
+        // Merge headers: Lấy customHeaders truyền vào + thêm X-Fake-IP nếu bật switch
+        let headers = customHeaders || {}; 
+        
+        if (document.getElementById('fakeIpToggle').checked) {
+            headers['X-Fake-IP'] = generateRandomIP();
+        }
+
+        try {
+            let fetchOptions = { method: method, headers: headers };
+            if (method === 'POST' && data) {
+                const formData = new FormData();
+                for (const key in data) { formData.append(key, data[key]); }
+                fetchOptions.body = formData;
+            }
+            const response = await fetch(url, fetchOptions);
+            
+            if (response.status === 403) log(`✅ BLOCKED! ${attackName} (403)`, 'status-403');
+            else if (response.status === 429) log(`⚠️ RATE LIMITED! (429)`, 'status-429');
+            else if (response.status === 200) log(`❌ FAILED! (200 OK)`, 'status-200');
+            else log(`ℹ️ Status: ${response.status}`);
+        } catch (error) { log(`Error: ${error.message}`, 'status-200'); }
+    }
+
+    async function simulateDDoS() {
+        log(`🚀 STARTING FLOOD...`, 'status-429');
+        let blockedCount = 0;
+        const fakeIP = document.getElementById('fakeIpToggle').checked ? generateRandomIP() : null;
+
+        for (let i = 0; i < 120; i++) {
+            let headers = {};
+            if (fakeIP) headers['X-Fake-IP'] = fakeIP;
+            fetch('/', {headers: headers}).then(res => {
+                if (res.status === 429) {
+                    blockedCount++;
+                    if (blockedCount % 10 === 0) log(`⚠️ [DoS] Req #${i} Blocked (429)`, 'status-429');
+                }
+            });
+            await new Promise(r => setTimeout(r, 10)); 
+        }
+        setTimeout(() => log(`🏁 FINISHED. Blocked: ${blockedCount}+`, 'normal'), 2000);
+    }
+</script>
+</body>
+</html>
