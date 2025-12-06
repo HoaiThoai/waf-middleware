@@ -111,7 +111,7 @@ def upload_file():
 
 # --- ADMIN SYSTEM ---
 ADMIN_USER = "admin"
-ADMIN_PASS = "YOUR_ADMIN_PASSWORD"
+ADMIN_PASS = "congnghe6"
 
 @app.route('/admin/login', methods=['GET', 'POST'])
 def admin_login():
