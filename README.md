@@ -17,7 +17,7 @@
 Bạn có thể cài đặt thư viện thông qua file `.whl` (đã đóng gói):
 
 ```bash
-pip install waf_middleware-1.0.0-py3-none-any.whl
+pip install waf-middleware-hoaithoai35==1.1.9
 Hướng dẫn Sử dụng
 Tích hợp WAF vào ứng dụng Flask của bạn chỉ với 2 dòng code:
 
